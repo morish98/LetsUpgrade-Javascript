@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Shopping Site</title>
+    <style media="screen">
+
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+      .header {
+        height: 70px;
+        width: 100%;
+        background: #82d1bf;
+        line-height: 70px;
+      }
+      h1 {
+        margin-left: 5%;
+        margin-right: 12%;
+        display: inline-block;
+        font-family: 'Oswald', sans-serif;
+      }
+      .search {
+        height: 70px;
+        width: 60%;
+        vertical-align: top;
+        display: inline-block;
+      }
+      .search input {
+        height: 40px;
+        width: 100%;
+        text-indent: 20px;
+        border-radius: 5px;
+        border: 1px solid gray;
+        outline: none;
+      }
+      .priceFilter {
+        width: 8%;
+        padding-top: 20px;
+        padding-left: 10px;
+        float: left;
+      }
+      .priceFilter input {
+        width: 80%;
+        margin-top: 10px;
+        padding: 5px;
+      }
+       .products {
+        width: 100%;
+        height: auto;
+        /* background: gray; */
+      }
+      .productwrapper {
+        height: auto;
+        width: 80%;
+        /* background: orange; */
+        margin-left: 10%;
+        margin-bottom: 50px;
+      }
+      .products>.productwrapper {
+        padding-bottom: 30px;
+      }
+      .product {
+        height: 450px;
+        width: 22%;
+        /* background: pink; */
+        display: inline-block;
+        margin-left: 2.15%;
+        margin-top: 30px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+      }
+      .prodimg {
+        height: 280px;
+        overflow: hidden;
+      }
+      .product h3,.product p {
+        padding-left: 10px;
+        padding-top: 5px;
+      }
+      .product p {
+        color: #464745;
+        font-family: 'Open Sans Condensed', sans-serif;
+      }
+      button {
+        padding: 10px;
+        width: 100%;
+        font-weight: bold;
+        margin-top: 10px;
+        border: 1px solid #82d1bf;
+        cursor: pointer;
+        background: #FFFC57;
+      }
+      #count {
+        padding: 10px;
+        margin-left: 30px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="header">
+        <h1>Shopping 360</h1>
+        <div class="search">
+          <input type="search" onkeyup="searchProduct(this.value)" placeholder="Search for products">
+        </div>
+    </div>
+
+    <div class="priceFilter">
+      <h3>Price Filter:</h3>
+      <div>
+        <input type="search" placeholder="Min Price" onkeyup="minPrice()" id="min">
+      </div>
+      <div>
+        <input type="search" placeholder="Max Price" onkeyup="maxPrice()" id="max">
+      </div>
+    </div>
+
+    <div class="products">
+      <div class="productwrapper" id="productwrapper"></div>
+    </div>
+
+    <div class="products">
+      <h1>Cart</h1>
+      <div id="count"></div>
+      <div class="productwrapper" id="cart"></div>
+    </div>
+
+    <script>
+
+      let products = [
+        {
+          name: "Cotton Formal",
+          size: "L",
+          color: "beige",
+          price: 15,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQYoFjvFSnO2tTZFfgKesWMb6BNn6OXgWxl_g&usqp=CAU",
+          description: "Gentlemen's choice"
+        },
+        {
+          name: "Mens Cropped Trouser",
+          size: "M",
+          color: "khaki",
+          price: 20,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSFPiA0LdBFVFKddvtLF7fBg_e_AHuJxXJsHw&usqp=CAU",
+          description: "Peter England trousers"
+        },
+        {
+          name: "Mens Cotton Trouser",
+          size: "S",
+          color: "olive",
+          price: 12,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR_NTfLfq4P9XyvCqmFRLQsNMAMzcjIbZwY8A&usqp=CAU",
+          description: "Best cotton trousers"
+        },
+        {
+          name: "Womens gray trousers",
+          size: "XS",
+          color: "gray",
+          price: 11,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQQLbEJcRc3zwXieu_170h4l-0JR_0RTlRzlQ&usqp=CAU",
+          description: "Womens jogging trousers"
+        },
+        {
+          name: "Womens Trouser",
+          size: "S",
+          color: "khaki",
+          price: 12,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRTOWkRZNKbaCFzIo5lgmAsJmIr9nlGlBEZ-A&usqp=CAU",
+          description: "Levis stylish pants"
+        },
+        {
+          name: "Womens joggers",
+          size: "M",
+          color: "pink",
+          price: 11,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSxgRBg-eb-3zjM5gjlUzm6dE8RiGtAT3pjWA&usqp=CAU",
+          description: "Womens stylish wear"
+        },
+        {
+          name: "White Tshirt",
+          size: "L",
+          color: "white",
+          price: 12,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTatH22O9sBQnmMX4aJlz8TcX7LdM6UPDz2EA&usqp=CAU",
+          description: "Checked white Tshirt"
+        },
+        {
+          name: "White Tshirt",
+          size: "M",
+          color: "white",
+          price: 14,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTZC-9aCc4s2oXoe5dNVKIpX89ptulrbFw8RA&usqp=CAU",
+          description: "Good looking white Tshirt"
+        },
+        {
+          name: "Roadster Mens Tshirt",
+          size: "M",
+          color: "blue",
+          price: 12,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRSDmnYS0uPQgRKONlR80NT6rL7WVO-ILwldg&usqp=CAU",
+          description: "Blue jeans Tshirt"
+        },
+        {
+          name: "Womens Plain White Tshirt",
+          size: "M",
+          color: "white",
+          price: 15,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRbYRxVea0r9eBcC6YEkDQkNRwF5YAxC5-HtA&usqp=CAU",
+          description: "Allen Solly hot white Tshirt"
+        },
+        {
+          name: "Black Tshirt",
+          size: "S",
+          color: "black",
+          price: 10,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcROR-wykyoNzo2eAz_fDO7YmIQsMPK4eyqIrA&usqp=CAU",
+          description: "Black shirt with white stripes"
+        },
+        {
+          name: "Allen Solly Tshirt",
+          size: "S",
+          color: "olive green",
+          price: 15,
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSGYWj02-pV-kmu5ZsP66TD25J3oMpsXAmUWA&usqp=CAU",
+          description: "Stylish olive green Tshirt"
+        }
+      ];
+
+      let cart = [];
+
+      function displayProducts(productsData,who="productwrapper"){
+        let productsString = "";
+        productsData.forEach(function(product,index){
+          if(who=="productwrapper"){
+            // sameProduct(product);
+            productsString += `<div class="product">
+            <div class="prodimg">
+              <img src="${product.image}" width="100%">
+            </div>
+              <h3>${product.name}</h3>
+              <p>Size: ${product.size}</p>
+              <p>Color: ${product.color}</p>
+              <p>Price: ${product.price}$</p>
+              <p>${product.description}</p>
+              <button onclick="addToCart(${index})">Add to cart</button>
+            </div>`;
+          }
+          else if(who=="cart"){
+            productsString += `<div class="product">
+            <div class="prodimg">
+              <img src="${product.image}" width="100%">
+            </div>
+              <h3>${product.name}</h3>
+              <p>Size: ${product.size}</p>
+              <p>Color: ${product.color}</p>
+              <p>Price: ${product.price}</p>
+              <p>${product.description}</p>
+              <button onclick="removeFromCart(${index})">Remove from cart</button>
+            </div>`;
+          }
+        });
+        displayCount(cart);
+        document.getElementById(who).innerHTML = productsString;
+      }
+
+      displayProducts(products);
+
+      //for searching the products
+      function searchProduct(searchValue){
+        let searchedProducts = products.filter(function(product,index){
+          let searchString = product.name+" "+product.color+" "+product.description;
+          return searchString.toUpperCase().indexOf(searchValue.toUpperCase())!=-1;
+        });
+        displayProducts(searchedProducts);
+      }
+
+      //for adding items to cart
+      function addToCart(index){
+        cart.push(products[index]);
+        displayProducts(cart,"cart");
+      }
+
+      //for removing cart items
+      function removeFromCart(index){
+        cart.splice(index,1);
+        displayProducts(cart,"cart");
+      }
+
+      //for counting cart items
+      function displayCount(cart){
+        if(cart.length==0){
+          document.getElementById("count").innerHTML = `<h3>Products: 0</h3>`;
+        }
+        else{
+          document.getElementById("count").innerHTML = `<h3>Products: ${cart.length}</h3>`;
+        }
+      }
+
+      //adding same items are added
+      // function sameProduct(product){
+      //   if(product.name==cart.filter(cart.name)){
+      //     alert("Item alerady added....");
+      //   }
+      // }
+
+    //   function minPrice(){
+    //     let searchValue = document.getElementById("min").value;
+    //     let newData;
+    //     if(Number(searchValue)<=products.price){
+    //       newData = products.filter(function(product){
+    //         return product.price.indexOf(searchValue)!=-1;
+    //       });
+    //     }
+    //     displayProducts(newData,"productwrapper");
+    //   }
+    // </script>
+
+  </body>
+</html>
